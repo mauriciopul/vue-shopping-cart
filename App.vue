@@ -1,12 +1,10 @@
 <template>
 <div>
-  <h1>{{car}}</h1>
   <table>
     <body>
-      <tr>
-        <td>Hola1</td>
-        <td>Hola2</td>
-        <td>Hola3</td>
+      <tr v-for="new_post in news" v-bind:key="new_post.id">
+        <td>{{new_post.id}}</td>
+        <td>{{new_post.title}}</td>
       </tr>
     </body>
   </table>
@@ -19,11 +17,22 @@ import axios from "axios";
 export default {
   data() {
     return {
-      car: "Hola mundo!!!"
+      news: ""
     };
   },
+
   mounted() {
     console.log("hola mundo mounted");
+    this.getNews();
+  },
+
+  methods: {
+    getNews() {
+      axios.get("https://jsonplaceholder.typicode.com/posts").then(response => {
+        this.news = response.data;
+        console.log("Data de response", response);
+      });
+    }
   }
 };
 </script>
