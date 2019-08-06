@@ -4,7 +4,8 @@
       <form>
         <input v-model="codigoProducto" placeholder="Codigo del producto" />
         <input v-model="nombreProducto" placeholder="Nombre del producto" />
-        <input v-model="precioProducto" placeholder="Precio del producto" />
+        <input type="number" v-model="precioProducto" placeholder="Precio del producto" />
+        <p>Precio: {{precioProducto}}</p>
       </form>
       <button v-on:click="postProducts()">Crear</button>
     </div>
@@ -29,7 +30,7 @@ export default {
       products: "",
       codigoProducto: "",
       nombreProducto: "",
-      precioProducto: 2
+      precioProducto: ""
     };
   },
 
@@ -43,7 +44,6 @@ export default {
         .get("http://localhost:3000/products/")
         .then(response => {
           this.products = response.data.products;
-          console.log("Data de response", response.data.products);
         })
         .catch(error => {
           console.log(error);
@@ -53,7 +53,7 @@ export default {
       const params = {
         codigoProducto: this.codigoProducto,
         nombreProducto: this.nombreProducto,
-        precioProducto: this.precioProducto
+        precioProducto: parseInt(this.precioProducto)
       };
       axios
         .post("http://localhost:3000/products/", params)
