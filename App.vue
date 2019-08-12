@@ -21,13 +21,13 @@
         <tr>
           <th colspan="3"><h3>Código</h3></th>
           <th><h3>Producto</h3></th>
-          <th colspan="3"><h3>Precio</h3></th>       
+          <th ><h3>Precio</h3></th>       
         </tr>
         
         <tr v-for="product_post in products" :key="product_post.codigoProducto">
           <td colspan="3">{{product_post.codigoProducto}}</td>          
           <td >{{product_post.nombreProducto}}</td>          
-          <td colspan="3">{{product_post.precioProducto}}</td>
+          <td >{{product_post.precioProducto}}</td>
         </tr>
 
       </table>
@@ -324,7 +324,7 @@ table {
 }
 th,
 td {
-  width: 25%;
+  width: 15%;
   text-align:  left;
   vertical-align: top;
   border: 1px solid #b3aca7;
@@ -339,6 +339,7 @@ caption {
   background: #000;
 }
 th {
+  width: 65%;
   background: #cbc6c1;
   text-align:  center;
 }
