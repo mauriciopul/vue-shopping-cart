@@ -3,40 +3,36 @@
 
     <div>
       <form id="form" class="topBefore">
-
-        <input v-model="codigoProducto" placeholder="Codigo del producto" /><br>
-        <input v-model="nombreProducto" placeholder="Nombre del producto" /><br>
-        <input type="number" v-model="precioProducto" placeholder="Precio del producto" /><br>        
-        <button v-on:click="postProducts()" id="submit">Crear</button> <br><br> 
-      
+        <input v-model="codigoProducto" placeholder="Codigo del producto que desea ingresar" />
+        <input v-model="nombreProducto" placeholder="Nombre del producto que desea ingresar" />
+        <input type="number" v-model="precioProducto" placeholder="Precio del producto que desea ingresar" />
+        <button v-on:click="postProducts()" id="submit">Crear</button>       
       </form>
-        <form id="form" class="topBefore">
-          <input v-model="codigoProducto" placeholder="Codigo del producto" /><br>
-          <button v-on:click="getOneProduct(codigoProducto)">Buscar</button>
-          <button v-on:click="deleteProduct()">Eliminar</button>  
-        </form>
+
+      <form id="form" class="topBefore">
+        <input v-model="codProdElim" placeholder="Codigo del producto que desea eliminar" />
+        <button v-on:click="deleteProduct()" id="submit">Eliminar</button>  
+        <!--<button v-on:click="getOneProduct(codigoProducto)">Buscar</button>-->        
+      </form>        
     </div>
-    <table>
-      <tbody>
-        <h2>
-          </h2>
-            <tr>
-            <td><h2>codigo</h2></td>
-            <td><h2>Producto</h2></td>
-            <td><h2>Precio</h2></td>
-       
-          </tr>
-        
-          <tr v-for="product_post in products" :key="product_post.codigoProducto">
-          <td>{{product_post.codigoProducto}}</td>          
-          <td>{{product_post.nombreProducto}}</td>          
-          <td>{{product_post.precioProducto}}</td>
-          <td>{{product_post._id}}</td>
-          <!--<td><button v-on:click="removeProduct(product_post._id)">eliminar</button></td>-->
-          
+
+    <form id="form2" class="topBefore">
+      <table>
+        <tr>
+          <th colspan="3"><h3>Código</h3></th>
+          <th><h3>Producto</h3></th>
+          <th colspan="3"><h3>Precio</h3></th>       
         </tr>
-      </tbody>
-    </table>
+        
+        <tr v-for="product_post in products" :key="product_post.codigoProducto">
+          <td colspan="3">{{product_post.codigoProducto}}</td>          
+          <td >{{product_post.nombreProducto}}</td>          
+          <td colspan="3">{{product_post.precioProducto}}</td>
+        </tr>
+
+      </table>
+    </form>
+
   </div>
 </template>
 
@@ -50,7 +46,8 @@ export default {
       codigoProducto: "",
       _id: "",
       nombreProducto: "",
-      precioProducto: ""
+      precioProducto: "",
+      codProdElim:""
     };
   },
 
@@ -69,7 +66,20 @@ export default {
         });
     },
 
+    getOneProduct(codigo) {
+      //debugger;
+      axios
+        .get("http://localhost:3000/products/")
+        .then(response => {
+          this.products = response.data.products;
+        })
+        .catch(error => {
+          console.log(error, "error......");
+        });
+    },
+
     postProducts() {
+      //debugger;
       const params = {
         codigoProducto: this.codigoProducto,
         nombreProducto: this.nombreProducto,
@@ -90,51 +100,23 @@ export default {
         });
     },
 
-    getOneProduct(codigo) {
-      axios
-        .get("http://localhost:3000/products/codigo/" + codigo)
-        .then(response => {
-          console.log(response);
-          if (response.data.products.length < 0) {
-            alert("sin data");
-            return;
-          }
-          this._id = response.data.products._id;
-          this.codigoProducto = response.data.products.codigoProducto;
-          this.nombreProducto = response.data.products.nombreProducto;
-          this.precioProducto = response.data.products.precioProducto;
-        });
-    },
-
     deleteProduct() {
+      
       let producto = this.products.filter(
-        product => product.codigoProducto === this.codigoProducto
+        product => product.codigoProducto === this.codProdElim
       );
+      console.log('eliminar');
       axios
         .delete("http://localhost:3000/products/" + producto[0]._id)
         .then(response => {
           this.getProducs();
         });
     }
-
-    // removeProduct() {
-    //   console.log('ingresando al metodo');
-    //   debugger
-    //   let producto = this.products.filter(product => product.codigoProducto === this.codigoProducto);
-    //   console.log(producto[0]._id, 'producto a remover')
-
-    //   axios
-    //     .delete("http://localhost:3000/products/" + producto._id)
-    //     .then(response => {
-    //       this.getProducs();
-    //     });
-    // }
   }
 };
 </script>
 
-<style>
-</style>
+
 
 <!--
 <style>
@@ -153,7 +135,6 @@ export default {
 
 
 
-<!--
 <style >
 @import url(https://fonts.googleapis.com/css?family=Lato:100,300,400);
 
@@ -181,8 +162,8 @@ textarea:focus::-moz-placeholder {
 
 input::placeholder,
 textarea::placeholder {
-  color: #aca49c;
-  font-size: 0.875em;
+  color: darkslategrey;
+  font-size: 1em;
 }
 
 input:focus::placeholder,
@@ -266,6 +247,11 @@ header {
   width: 500px;
   margin: 50px auto 100px auto;
 }
+#form2 {
+  position: relative;
+  width: 700px;
+  margin: 50px auto 100px auto;
+}
 
 input {
   font-family: "Lato", sans-serif;
@@ -320,14 +306,16 @@ textarea:hover {
 }
 
 #submit {
+  background: #cbc6c1;
   width: 502px;
 
   padding: 0;
   margin: -5px 0px 0px 0px;
+  height: 60px;
 
   font-family: "Lato", sans-serif;
   font-size: 1.2em;
-  color: rgba(52, 58, 58, 0.432);
+  color: white;
 
   outline: none;
   cursor: pointer;
@@ -337,10 +325,43 @@ textarea:hover {
 }
 
 #submit:hover {
+  background: #b3aca7;
   color: black;
 }
+
+
+
+table {
+  font-family: "Lato", sans-serif;
+  font-size: 1em;
+  width: 100%;
+  color: darkslategrey;
+  
+  border: 1px solid #b3aca7;
+
+  
+}
+th,
+td {
+  width: 25%;
+  text-align:  left;
+  vertical-align: top;
+  border: 1px solid #b3aca7;
+  border-collapse: collapse;
+  padding: 0.3em;
+  caption-side: bottom;
+  
+}
+caption {
+  padding: 0.3em;
+  color: #fff;
+  background: #000;
+}
+th {
+  background: #cbc6c1;
+  text-align:  center;
+}
 </style>
--->
 
 
 
